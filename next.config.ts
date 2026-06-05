@@ -15,31 +15,21 @@ const securityHeaders = [
   },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), payment=()",
+    value: "camera=self, microphone=(), geolocation=(), payment=()",
   },
   {
-    key: "X-DNS-Prefetch-Control",
-    value: "on",
-  },
-  {
-    // camera=() left open intentionally only for QR scanner route — override per-route if needed
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      // Next.js requires 'unsafe-inline' for styles in dev; tighten with nonce in production if needed
       "style-src 'self' 'unsafe-inline'",
-      // Next.js hydration requires 'unsafe-eval' only in development
-      process.env.NODE_ENV === "development"
-        ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
-        : "script-src 'self'",
-      `connect-src 'self' ${process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""} wss://*.supabase.co`,
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.supabase.co",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
       "img-src 'self' data: blob:",
       "font-src 'self'",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'none'",
-      "upgrade-insecure-requests",
     ].join("; "),
   },
 ];
